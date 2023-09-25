@@ -40,7 +40,7 @@ class Location {
 		void add_item(Item item);
 		void set_visited();
 		bool get_visited();
-		friend std::ostream & operator << (std::ostream &out, const Location *location);
+		friend std::ostream & operator << (std::ostream &out, const Location &location);
 	private:
 		std::string name;
 		std::string desc;

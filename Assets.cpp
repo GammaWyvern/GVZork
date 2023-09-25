@@ -63,3 +63,73 @@ std::string NPC::getMessage() {
 	return message;
 
 }
+
+
+/***************************************
+ * Location Functions
+ **************************************/
+
+Location::Location(std::string name, std::string desc) {
+	this->name = name;
+	this->desc = desc;
+	this->visited = false;
+	// TODO add neighobrs, npc, and items?
+}
+
+std::map<std::string, Location> Location::get_locations() {
+	return this->neighbors;
+}
+
+void Location::add_location(std::string direction, Location location) {
+	// If direction key is empty, throw
+	if(!direction.size()) {
+		throw std::invalid_argument("Direction is empty");
+	}
+
+	// If key not found, add pair
+	if(this->neighbors.find(direction) == this->neighbors.end()) {
+		this->neighbors.insert(std::pair<std::string, Location>(direction, location));
+	// If key already exists, throw
+	} else {
+		throw std::invalid_argument("Direction is already in map"); 
+	}
+}
+
+void Location::add_npc(NPC npc) {
+	this->npcs.push_back(npc);
+}
+
+void Location::add_item(Item item) {
+	this->items.push_back(item);
+}
+
+void Location::set_visited() {
+	this->visited = true;
+}
+
+bool Location::get_visited() {
+	return this->visited;
+}
+
+std::ostream & operator << (std::ostream &out, const Location &location) {
+	out << location.name << " - " << location.desc << "\n";
+
+	out << "\nYou see the following NPCs:\n";
+	for(NPC npc: location.npcs)
+		out << "\t- " << npc << "\n";
+
+	out << "\nYou see the following items:" << "\n";
+	for(Item item: location.items)
+		out << "\t- " << item << "\n";
+
+	out << "\nYou can go in the following directions:" << "\n";
+	for(std::pair<std::string, Location> loc: location.neighbors) {
+		out << "\t- " << loc.first << " - " << loc.second;
+		if(loc.second.get_visited()) {
+			out << " (Visited)";
+		}
+		out << "\n";
+	}
+
+	return out;
+}
