@@ -1,7 +1,8 @@
 #pragma once
 
-#include <string>
 #include <iostream>
+#include <string>
+#include <vector>
 
 class Item {
 	public:
@@ -20,16 +21,18 @@ class NPC {
 		friend std::ostream & operator << (std::ostream &out, const NPC &npc);
 		std::string getName();
 		std::string getDesc();
+		std::string getMessage();
 	private:
 		std::string name;
 		std::string desc;
 		int messageNum;
-		//std::vector messages;
-
-
+		std::vector<std::string> messages;
 };
 
 class Location {
+	public:
+
+	private:
 
 };
 

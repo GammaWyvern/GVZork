@@ -56,3 +56,10 @@ std::string NPC::getName() {
 std::string NPC::getDesc() {
 	return this->desc;
 }
+
+std::string NPC::getMessage() {
+	std::string message = this->messages[this->messageNum];
+	this->messageNum = (++this->messageNum) % this->messages.size();
+	return message;
+
+}
