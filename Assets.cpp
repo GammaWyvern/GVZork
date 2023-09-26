@@ -133,7 +133,7 @@ std::ostream & operator << (std::ostream &out, const Location &location) {
 	}
 
 	out << "\nYou can go in the following directions:" << "\n";
-	for(std::pair<std::string, Location> travel: location.neighbors) {
+	for(std::pair<std::string, Location&> travel: location.neighbors) {
 		if(travel.second.get_visited()) {
 			out << "\t- " << travel.first << " - " << travel.second.name << " (Visited)\n";
 		} else {

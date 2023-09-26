@@ -14,8 +14,6 @@ int main(int argc, char* argv[]) {
 	lib.add_npc(keag);
 
 	// Some testing
-	std::cout << keag.get_message() << '\n';
-	std::cout << lib.get_npcs().at(0).get_message() << '\n';
 	std::cout << lib;
 }
 
