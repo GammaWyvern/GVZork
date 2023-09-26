@@ -40,7 +40,7 @@ std::ostream & operator << (std::ostream &out, const Item &item) {
 NPC::NPC(std::string name, std::string desc) {
 	this->name = name;
 	this->desc = desc;
-	this->messageNum = 0;
+	this->message_num = 0;
 	// TODO? this->messages = std::vector<std::string>();
 }
 
@@ -49,19 +49,23 @@ std::ostream & operator << (std::ostream &out, const NPC &npc) {
 	return out;
 }
 
-std::string NPC::getName() {
+std::string NPC::get_name() {
 	return this->name;
 }
 
-std::string NPC::getDesc() {
+std::string NPC::get_desc() {
 	return this->desc;
 }
 
-std::string NPC::getMessage() {
-	std::string message = this->messages[this->messageNum];
-	this->messageNum = (++this->messageNum) % this->messages.size();
+std::string NPC::get_message() {
+	std::string message = this->messages[this->message_num];
+	this->message_num = (++this->message_num) % this->messages.size();
 	return message;
 
+}
+
+void NPC::add_message(std::string message) {
+	this->messages.push_back(message);
 }
 
 
@@ -101,6 +105,10 @@ void Location::add_npc(NPC &npc) {
 
 void Location::add_item(Item &item) {
 	this->items.push_back(item);
+}
+
+std::vector<NPC> Location::get_npcs() {
+	return this->npcs;
 }
 
 void Location::set_visited() {

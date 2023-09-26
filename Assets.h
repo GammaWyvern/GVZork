@@ -20,13 +20,14 @@ class NPC {
 	public:
 		NPC(std::string name, std::string desc);
 		friend std::ostream & operator << (std::ostream &out, const NPC &npc);
-		std::string getName();
-		std::string getDesc();
-		std::string getMessage();
+		std::string get_name();
+		std::string get_desc();
+		std::string get_message();
+		void add_message(std::string message);
 	private:
 		std::string name;
 		std::string desc;
-		int messageNum;
+		int message_num;
 		std::vector<std::string> messages;
 };
 
