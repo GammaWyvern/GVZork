@@ -33,21 +33,21 @@ class NPC {
 class Location {
 	public:
 		Location(std::string name, std::string desc);
-		std::map<std::string, Location> get_locations();
-		void add_location(std::string direction, Location location);
-		void add_npc(NPC npc);
-		std::vector<NPC> get_npcs();
-		void add_item(Item item);
-		void set_visited();
-		bool get_visited();
 		friend std::ostream & operator << (std::ostream &out, const Location &location);
+		void add_location(std::string direction, Location &location);
+		void add_npc(NPC &npc);
+		void add_item(Item &item);
+		std::map<std::string, Location&> get_locations();
+		std::vector<NPC> get_npcs();
+		bool get_visited();
+		void set_visited();
 	private:
 		std::string name;
 		std::string desc;
-		bool visited;
-		std::map<std::string, Location> neighbors;
+		std::map<std::string, Location&> neighbors;
 		std::vector<NPC> npcs;
 		std::vector<Item> items;
+		bool visited;
 };
 
 class Game {
