@@ -4,6 +4,14 @@ The locations neighbors currently do work by reference, but the items and npcs d
 
 Is that how we want it to work?
 
+
+
 I think I want to extract the player data from the Game class into it's own Player class
 Then I can add money to the player and shops to the npcs,
 then maybe I can also add mana to player and spells (would be like items)
+
+
+
+Alos probably remove the GameLogic namespace later
+	I thought it was a good idea but probably not
+	I'll keep an eye on it
