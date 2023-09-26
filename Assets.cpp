@@ -85,17 +85,13 @@ std::map<std::string, Location&> Location::get_locations() {
 }
 
 void Location::add_location(std::string direction, Location &location) {
-	// If direction key is empty, throw
 	if(!direction.size()) {
 		throw std::invalid_argument("Direction is empty");
 	}
-
-	// If key not found, add pair
-	if(this->neighbors.find(direction) == this->neighbors.end()) {
-		this->neighbors.insert(std::pair<std::string, Location&>(direction, location));
-	// If key already exists, throw
-	} else {
-		throw std::invalid_argument("Direction is already in map"); 
+		
+	bool result = (this->neighbors.insert(std::pair<std::string, Location&>(direction, location))).second;
+	if(!result) {
+		throw std::invalid_argument("Direction was already used at location"); 
 	}
 }
 
