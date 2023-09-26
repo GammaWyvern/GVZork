@@ -3,3 +3,7 @@ The locations neighbors currently do work by reference, but the items and npcs d
 	because you can't make a vector of references
 
 Is that how we want it to work?
+
+I think I want to extract the player data from the Game class into it's own Player class
+Then I can add money to the player and shops to the npcs,
+then maybe I can also add mana to player and spells (would be like items)

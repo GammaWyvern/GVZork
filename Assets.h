@@ -4,6 +4,13 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <functional>
+
+typedef std::function<void(std::vector<std::string>)> command;
+
+namespace GameLogic {
+	void get_input(std::vector<std::string> &dest);
+}
 
 class Item {
 	public:
@@ -53,15 +60,31 @@ class Location {
 
 class Game {
 	public:
-
+		Game();
+		void create_world();
+		std::map<std::string, command> setup_commands();
+		Location& random_location();
+		void play();
+		// Commands
+		void show_help();
+		void talk(std::vector<std::string> tokens);
+		void meet(std::vector<std::string> tokens);
+		void give(std::vector<std::string> tokens);
+		void go(std::vector<std::string> tokens);
+		void show_items(std::vector<std::string> tokens);
+		void look(std::vector<std::string> tokens);
+		void quit(std::vector<std::string> tokens);
+		// My own?
+		// Could add simple magic, that would be cool????
+		// Like make my own simple magic system with mana
+		// and spells that you could pick up and/or buy with money?
 	private:
-		//Command = alias for function -> void (std::vector<std::string>)
-		//map<std::string, Command>
-		std::vector<Item> playerItems;
-		int playerWeight;
+		std::map<std::string, command> commands;
+		std::vector<Item> player_items;
+		int player_weight;
 		std::vector<Location> locations;
-		Location playerLocation;
-		int elfHunger;
-		bool gameInProgress;
+		Location *player_location;
+		int elf_hunger;
+		bool game_in_progress;
 };
 

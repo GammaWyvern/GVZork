@@ -3,6 +3,8 @@
 #include <iostream>
 #include <stdexcept>
 
+
+
 /***************************************
  * Item Functions
  **************************************/
@@ -67,6 +69,7 @@ std::string NPC::get_message() {
 void NPC::add_message(std::string message) {
 	this->messages.push_back(message);
 }
+
 
 
 /***************************************
@@ -139,3 +142,31 @@ std::ostream & operator << (std::ostream &out, const Location &location) {
 
 	return out;
 }
+
+
+
+/***************************************
+ * Game Functions
+ **************************************/
+
+Game::Game() {
+	// TODO a LOT
+}
+
+
+
+/***************************************
+ * GameLogic Functions
+ **************************************/
+
+void GameLogic::get_input(std::vector<std::string> &dest) {
+	dest.clear();
+	std::string instruction;
+	while(std::cin >> instruction) {
+		dest.push_back(instruction);
+		if(std::cin.peek() == '\n')
+			break;
+	}
+}
+
+
