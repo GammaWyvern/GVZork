@@ -1,28 +1,13 @@
 #include "Assets.h"
-#include <iostream>
-#include <vector>
-#include <string>
 
-using namespace GameLogic;
+int main() {
+	Location lib("Library", "Full of books");
+	Location kirk("Kirkoff", "Grab some food");
 
-int main(int argc, char* argv[]) {
-	//Game game;
-	std::vector<std::string> instruction;
-	get_input(instruction);
+	lib.add_location("North", kirk); // We add a copy of kirk to lib
+	kirk.add_location("South", lib); // But now we add a copy of lib to the original
 
-	/*
-	NPC keag("Keagen", "One annoying ass dude");
-	keag.add_message("That's what Joe was sayin");
-	keag.add_message("Oh, you don't know who Joe is?");
-	keag.add_message("JOE MAMA!");
-
-	Location lib("Library", "A relaxing place full of books.");
-	Location kirk("Kirkoff", "Enjoy the food and atmosphere!");
-	lib.add_location("North", kirk);
-	kirk.set_visited();
-	lib.add_npc(keag);
-
-	// Some testing
-	std::cout << lib;
-	*/
+	std::cout << lib << std::endl; // So we see library has a path to kirk
+	std::cout << lib.get_locations().at("North") << std::endl; // But the copy of kirk we can get to from lib
 }
+
