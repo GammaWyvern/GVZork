@@ -62,6 +62,7 @@ std::ostream& operator<< (std::ostream& out, const NPC& npc) {
 Location::Location(std::string name, std::string desc) {
 	this->name = name;
 	this->desc = desc;
+	this->visited = false;
 }
 
 void Location::add_item(Item item) {

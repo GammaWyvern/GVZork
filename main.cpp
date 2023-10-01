@@ -3,6 +3,8 @@
 int main() {
 	Location lib("Library", "Full of books");
 	Location kirk("Kirkoff", "Grab some food");
+	lib.set_visited();
+	kirk.set_visited();
 
 	lib.add_location("North", kirk); // We add a copy of kirk to lib
 	kirk.add_location("South", lib); // But now we add a copy of lib to the original
