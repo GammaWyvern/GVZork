@@ -46,7 +46,7 @@ class Location {
 		// Getters
 		std::vector<Item>& get_item();
 		std::vector<NPC>& get_npc();
-		std::map<std::string, Location>& get_locations();
+		std::map<std::string, std::reference_wrapper<Location>>& get_locations();
 		bool get_visited();
 		// Visited funcs
 		friend std::ostream& operator<<(std::ostream& out, const Location& location);
@@ -56,7 +56,7 @@ class Location {
 		bool visited;
 		std::vector<NPC> npcs;
 		std::vector<Item> items;
-		std::map<std::string, Location> neighbors;
+		std::map<std::string, std::reference_wrapper<Location>> neighbors;
 };
 
 class Game {
@@ -64,8 +64,9 @@ class Game {
 		Game();
 		void create_world();
 		std::map<std::string, command> setup_commands();
-		Location* random_location();
+		std::reference_wrapper<Location> random_location();
 		void play();
+		std::string get_input(std::vector<std::string> tokens);
 		// Commands
 		void print_help(std::vector<std::string> tokens);
 		void talk(std::vector<std::string> tokens);
@@ -75,8 +76,9 @@ class Game {
 		std::map<std::string, command> commands;
 		std::vector<Item> player_inventory;
 		int player_weight;
-		std::vector<Location> locations;
-		Location* player_location;
+		std::vector<std::reference_wrapper<Location>> locations;
+		//Location player_location;
 		int elf_hunger;
 		bool game_in_progress;
 };
+

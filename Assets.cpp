@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <functional>
 
 /***************************************
  * Item Functions
@@ -71,11 +72,8 @@ void Location::add_npc(NPC npc) {
 	this->npcs.push_back(npc);
 }
 
-// Passes reference to location, BUT
 void Location::add_location(std::string direction, Location& location) {
-	// TODO check this
-	// this still copies the data so the reference doesn't matter??
-	this->neighbors.insert(std::pair<std::string, Location>(direction, location));
+	this->neighbors.emplace(direction, std::ref(location));
 }
 
 void Location::set_visited() {
@@ -90,7 +88,7 @@ std::vector<NPC>& Location::get_npc() {
 	return this->npcs;
 }
 
-std::map<std::string, Location>& Location::get_locations() {
+std::map<std::string, std::reference_wrapper<Location>>& Location::get_locations() {
 	return this->neighbors;
 }
 
@@ -135,7 +133,7 @@ Game::Game() {
 	this->create_world();
 	this->player_weight = 0;
 	this->elf_hunger = 500;
-	this->player_location = this->random_location();
+	//this->player_location = this->random_location();
 }
 
 std::map<std::string, command> Game::setup_commands() {
@@ -147,28 +145,58 @@ std::map<std::string, command> Game::setup_commands() {
 	return commands;
 }
 
-Location* Game::random_location() {
-	return &this->locations[0];
+std::reference_wrapper<Location> Game::random_location() {
+	int randInt = rand() % this->locations.size();
+	return this->locations[randInt];
 }
 
 void Game::create_world() {
-	Location lib("Library", "Full of books");
-	Location kirk("Kirkoff", "Grab some food");
+	Location* lib = new Location("Library", "Full of books");
+	Location* kirk = new Location("Kirkoff", "Grab some food");
 	lib.set_visited();
 	kirk.set_visited();
 
-	this->locations.push_back(lib);
-	this->locations.push_back(kirk);
-
 	lib.add_location("North", kirk); // We add a copy of kirk to lib
 	kirk.add_location("South", lib); // But now we add a copy of lib to the original
+
+	this->locations.push_back(std::ref(lib));
+	this->locations.push_back(std::ref(kirk));
+
+	std::cout << "Still inside of create_world()" << std::endl;
+	std::cout << this->locations[0] << std::endl;
 }
 
 void Game::play() {
+	std::string command;
 	std::vector<std::string> tokens;
+
 	this->commands["help"](this, tokens);
 	this->commands["talk"](this, tokens);
 	this->commands["meet"](this, tokens);
+
+	std::cout << "Now outside of create_world()" << std::endl;
+	std::cout << this->locations[0] << std::endl;
+}
+
+std::string Game::get_input(std::vector<std::string> tokens) {
+	tokens.clear();
+	std::string token;
+	std::string command;
+
+	std::cin >> command;
+	if(std::cin.peek() == '\n') {
+		return command;
+	}
+
+	while(std::cin >> token) {
+		tokens.push_back(token);
+		
+		if(std::cin.peek() == '\n') {
+			break;
+		}
+	}
+
+	return command;
 }
 
 /***************************************
