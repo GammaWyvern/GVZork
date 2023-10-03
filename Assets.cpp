@@ -3,8 +3,6 @@
 #include <vector>
 #include <string>
 
-
-
 /***************************************
  * Item Functions
  **************************************/
@@ -124,4 +122,67 @@ std::ostream& operator<<(std::ostream& out, const Location& location) {
 	}
 
 	return out;
+}
+
+
+
+/***************************************
+ * Game Functions
+ **************************************/
+
+Game::Game() {
+	this->commands = this->setup_commands();
+	this->create_world();
+	this->player_weight = 0;
+	this->elf_hunger = 500;
+	this->player_location = this->random_location();
+}
+
+std::map<std::string, command> Game::setup_commands() {
+	std::map<std::string, command> commands;
+	commands["help"] = &Game::print_help;
+	commands["talk"] = &Game::talk;
+	commands["meet"] = &Game::meet;
+
+	return commands;
+}
+
+Location* Game::random_location() {
+	return &this->locations[0];
+}
+
+void Game::create_world() {
+	Location lib("Library", "Full of books");
+	Location kirk("Kirkoff", "Grab some food");
+	lib.set_visited();
+	kirk.set_visited();
+
+	this->locations.push_back(lib);
+	this->locations.push_back(kirk);
+
+	lib.add_location("North", kirk); // We add a copy of kirk to lib
+	kirk.add_location("South", lib); // But now we add a copy of lib to the original
+}
+
+void Game::play() {
+	std::vector<std::string> tokens;
+	this->commands["help"](this, tokens);
+	this->commands["talk"](this, tokens);
+	this->commands["meet"](this, tokens);
+}
+
+/***************************************
+ * Game Commands 
+ **************************************/
+
+void Game::print_help(std::vector<std::string> tokens) {
+	std::cout << "Ran help" << std::endl;
+}
+
+void Game::talk(std::vector<std::string> tokens) {
+	std::cout << "Ran talk" << std::endl;
+}
+
+void Game::meet(std::vector<std::string> tokens) {
+	std::cout << "Ran meet" << std::endl;
 }
