@@ -2,6 +2,14 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <functional>
+
+class Item;
+class NPC;
+class Location;
+class Game;
+
+typedef std::function<void(Game*, std::vector<std::string>)> command;
 
 class Item {
 	public:
@@ -49,4 +57,26 @@ class Location {
 		std::vector<NPC> npcs;
 		std::vector<Item> items;
 		std::map<std::string, Location> neighbors;
+};
+
+class Game {
+	public:
+		Game();
+		void create_world();
+		std::map<std::string, command> setup_commands();
+		Location* random_location();
+		void play();
+		// Commands
+		void print_help(std::vector<std::string> tokens);
+		void talk(std::vector<std::string> tokens);
+		void meet(std::vector<std::string> tokens);
+		// TODO add more commands
+	private:
+		std::map<std::string, command> commands;
+		std::vector<Item> player_inventory;
+		int player_weight;
+		std::vector<Location> locations;
+		Location* player_location;
+		int elf_hunger;
+		bool game_in_progress;
 };
