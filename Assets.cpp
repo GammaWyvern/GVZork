@@ -151,8 +151,8 @@ std::reference_wrapper<Location> Game::random_location() {
 }
 
 void Game::create_world() {
-	Location* lib = new Location("Library", "Full of books");
-	Location* kirk = new Location("Kirkoff", "Grab some food");
+	Location lib("Library", "Full of books");
+	Location kirk("Kirkoff", "Grab some food");
 	lib.set_visited();
 	kirk.set_visited();
 
@@ -173,6 +173,7 @@ void Game::play() {
 	this->commands["help"](this, tokens);
 	this->commands["talk"](this, tokens);
 	this->commands["meet"](this, tokens);
+	std::cout << std::endl;
 
 	std::cout << "Now outside of create_world()" << std::endl;
 	std::cout << this->locations[0] << std::endl;
