@@ -322,8 +322,11 @@ void Game::go(std::vector<std::string> tokens) {
 }
 
 void Game::show_items(std::vector<std::string> tokens) {
-	// TODO implement	
-	std::cout << "Implement show_item()" << std::endl;
+	for(Item item: this->player_inventory) {
+		std::cout << item << std::endl;	
+	}
+
+	std::cout << "Total weight: " << this->player_weight << std::endl;
 }
 
 void Game::look(std::vector<std::string> tokens) {

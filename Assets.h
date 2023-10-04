@@ -91,7 +91,7 @@ class Game {
 	private:
 		std::map<std::string, command> commands;
 		std::vector<Item> player_inventory;
-		int player_weight;
+		float player_weight;
 		std::vector<std::shared_ptr<Location> > locations;
 		Location* player_location;
 		int elf_hunger;
