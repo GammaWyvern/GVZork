@@ -34,6 +34,7 @@ std::ostream& operator<< (std::ostream& out, const Item& item) {
 NPC::NPC(std::string name, std::string desc) {
 	this->name = name;
 	this->desc = desc;	
+	this->message_num = 0;
 }
 
 std::string NPC::get_name() const {
@@ -45,9 +46,17 @@ std::string NPC::get_desc() const {
 }
 
 std::string NPC::get_message() {
+	if(!this->messages.size()) {
+		return "They have nothing to say";
+	}
+
 	std::string message = this->messages[this->message_num];
 	this->message_num = (this->message_num + 1) % this->messages.size();
 	return message;
+}
+
+void NPC::add_message(std::string message) {
+	this->messages.push_back(message);
 }
 
 std::ostream& operator<< (std::ostream& out, const NPC& npc) {
@@ -83,11 +92,11 @@ void Location::set_visited() {
 	this->visited = true;
 }
 
-std::vector<Item>& Location::get_item() {
+std::vector<Item>& Location::get_items() {
 	return this->items;
 }
 
-std::vector<NPC>& Location::get_npc() {
+std::vector<NPC>& Location::get_npcs() {
 	return this->npcs;
 }
 
@@ -157,8 +166,13 @@ void Game::create_world() {
 	auto lib = std::shared_ptr<Location>(new Location("Library", "Full of books"));
 	auto kirk = std::shared_ptr<Location>(new Location("Kirkoff", "Grab some food"));
 
-	lib->add_location("North", kirk); // We add a copy of kirk to lib
-	kirk->add_location("South", lib); // But now we add a copy of lib to the original
+	NPC keag("Keagen", "Some dude.");
+	keag.add_message("Hey");
+	keag.add_message("What's up?");
+	kirk->add_npc(keag);
+
+	lib->add_location("North", kirk); 
+	kirk->add_location("South", lib);
 
 	this->locations.push_back(lib);
 	this->locations.push_back(kirk);
@@ -168,6 +182,7 @@ void Game::play() {
 	std::string command;
 	std::vector<std::string> tokens;
 
+	std::cout << *this->player_location << std::endl;
 	while(this->game_in_progress) {
 		command = this->get_input(tokens);
 
@@ -180,7 +195,7 @@ void Game::play() {
 	}
 }
 
-std::string Game::get_input(std::vector<std::string> tokens) {
+std::string Game::get_input(std::vector<std::string>& tokens) {
 	tokens.clear();
 	std::string token;
 	std::string command;
@@ -210,7 +225,20 @@ void Game::print_help(std::vector<std::string> tokens) {
 }
 
 void Game::talk(std::vector<std::string> tokens) {
-	std::cout << "Ran talk" << std::endl;
+	// TODO this will only work for npc's with a single word name currently
+	// Go through each NPC
+	for(auto npc=this->player_location->get_npcs().begin(); npc != this->player_location->get_npcs().end(); npc++) {
+		// Go through each potential target in tokens 
+		for(std::string target: tokens) {
+			// If match, print message
+			if(!npc->get_name().compare(target)) {
+				std::cout << npc->get_message() << std::endl;
+				return;
+			}
+		}
+	}
+
+	std::cout << "NPC not found" << std::endl;
 }
 
 void Game::meet(std::vector<std::string> tokens) {

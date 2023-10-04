@@ -31,6 +31,7 @@ class NPC {
 		std::string get_name() const;
 		std::string get_desc() const;
 		std::string get_message();
+		void add_message(std::string message);
 		friend std::ostream& operator<<(std::ostream& out, const NPC& npc);
 	private:
 		std::string name;
@@ -47,8 +48,8 @@ class Location {
 		void add_location(std::string direction, std::shared_ptr<Location> location);
 		void set_visited();
 		// Getters
-		std::vector<Item>& get_item();
-		std::vector<NPC>& get_npc();
+		std::vector<Item>& get_items();
+		std::vector<NPC>& get_npcs();
 		std::map<std::string, Location*>& get_locations();
 		bool get_visited();
 		// Visited funcs
@@ -73,7 +74,7 @@ class Game {
 		std::map<std::string, command> setup_commands();
 		std::shared_ptr<Location> random_location();
 		void play();
-		std::string get_input(std::vector<std::string> tokens);
+		std::string get_input(std::vector<std::string>& tokens);
 		// Commands
 		void print_help(std::vector<std::string> tokens);
 		void talk(std::vector<std::string> tokens);
