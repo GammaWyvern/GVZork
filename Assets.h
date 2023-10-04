@@ -4,6 +4,9 @@
 #include <map>
 #include <functional>
 
+//This is the real man's way to do C++
+#include <memory>
+
 class Item;
 class NPC;
 class Location;
@@ -41,12 +44,12 @@ class Location {
 		Location(std::string name, std::string desc);
 		void add_item(Item item);
 		void add_npc(NPC npc);
-		void add_location(std::string direction, Location& location);
+		void add_location(std::string direction, std::shared_ptr<Location> location);
 		void set_visited();
 		// Getters
 		std::vector<Item>& get_item();
 		std::vector<NPC>& get_npc();
-		std::map<std::string, std::reference_wrapper<Location> >& get_locations();
+		std::map<std::string, Location*>& get_locations();
 		bool get_visited();
 		// Visited funcs
 		friend std::ostream& operator<<(std::ostream& out, const Location& location);
@@ -56,15 +59,19 @@ class Location {
 		bool visited;
 		std::vector<NPC> npcs;
 		std::vector<Item> items;
-		std::map<std::string, std::reference_wrapper<Location> > neighbors;
+		std::map<std::string, Location*> neighbors;
 };
 
 class Game {
 	public:
 		Game();
+		// TODO shouldn't need destructor, but I'll have to check for memory
+		// leaks after. But when Game is destructed at the end of main(),
+		// its locations vector should be freed and all shared_ptr should 
+		// be deletede automatically, freeing up all memory used
 		void create_world();
 		std::map<std::string, command> setup_commands();
-		std::reference_wrapper<Location> random_location();
+		std::shared_ptr<Location> random_location();
 		void play();
 		std::string get_input(std::vector<std::string> tokens);
 		// Commands
@@ -76,8 +83,8 @@ class Game {
 		std::map<std::string, command> commands;
 		std::vector<Item> player_inventory;
 		int player_weight;
-		std::vector<std::reference_wrapper<Location> > locations;
-		//Location player_location;
+		std::vector<std::shared_ptr<Location> > locations;
+		std::shared_ptr<Location> player_location;
 		int elf_hunger;
 		bool game_in_progress;
 };

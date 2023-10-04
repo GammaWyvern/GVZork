@@ -4,6 +4,9 @@
 #include <string>
 #include <functional>
 
+//This is the real man's way to do C++
+#include <memory>
+
 /***************************************
  * Item Functions
  **************************************/
@@ -72,8 +75,8 @@ void Location::add_npc(NPC npc) {
 	this->npcs.push_back(npc);
 }
 
-void Location::add_location(std::string direction, Location& location) {
-	this->neighbors.emplace(direction, std::ref(location));
+void Location::add_location(std::string direction, std::shared_ptr<Location> location) {
+	this->neighbors[direction] = location.get();
 }
 
 void Location::set_visited() {
@@ -88,7 +91,7 @@ std::vector<NPC>& Location::get_npc() {
 	return this->npcs;
 }
 
-std::map<std::string, std::reference_wrapper<Location>>& Location::get_locations() {
+std::map<std::string, Location*>& Location::get_locations() {
 	return this->neighbors;
 }
 
@@ -110,10 +113,10 @@ std::ostream& operator<<(std::ostream& out, const Location& location) {
 	out << std::endl;
 	// Locations
 	out << "You can go in the following directions:" << std::endl;
-	for(std::pair<std::string, Location> dir: location.neighbors) {
+	for(std::pair<std::string, Location*> dir: location.neighbors) {
 		out << "\t- " << dir.first << " - "; 
-		if(dir.second.get_visited()) {
-			out << dir.second.name << " (Visited)" << std::endl;
+		if(dir.second->get_visited()) {
+			out << dir.second->name << " (Visited)" << std::endl;
 		} else {
 			out << "Unknown" << std::endl;
 		}
@@ -133,7 +136,7 @@ Game::Game() {
 	this->create_world();
 	this->player_weight = 0;
 	this->elf_hunger = 500;
-	//this->player_location = this->random_location();
+	this->player_location = this->random_location();
 }
 
 std::map<std::string, command> Game::setup_commands() {
@@ -145,38 +148,36 @@ std::map<std::string, command> Game::setup_commands() {
 	return commands;
 }
 
-std::reference_wrapper<Location> Game::random_location() {
+std::shared_ptr<Location> Game::random_location() {
 	int randInt = rand() % this->locations.size();
 	return this->locations[randInt];
 }
 
 void Game::create_world() {
-	Location lib("Library", "Full of books");
-	Location kirk("Kirkoff", "Grab some food");
-	lib.set_visited();
-	kirk.set_visited();
+	auto lib = std::shared_ptr<Location>(new Location("Library", "Full of books"));
+	auto kirk = std::shared_ptr<Location>(new Location("Kirkoff", "Grab some food"));
 
-	lib.add_location("North", kirk); // We add a copy of kirk to lib
-	kirk.add_location("South", lib); // But now we add a copy of lib to the original
+	lib->add_location("North", kirk); // We add a copy of kirk to lib
+	kirk->add_location("South", lib); // But now we add a copy of lib to the original
 
-	this->locations.push_back(std::ref(lib));
-	this->locations.push_back(std::ref(kirk));
-
-	std::cout << "Still inside of create_world()" << std::endl;
-	std::cout << this->locations[0] << std::endl;
+	this->locations.push_back(lib);
+	this->locations.push_back(kirk);
 }
 
 void Game::play() {
 	std::string command;
 	std::vector<std::string> tokens;
 
-	this->commands["help"](this, tokens);
-	this->commands["talk"](this, tokens);
-	this->commands["meet"](this, tokens);
-	std::cout << std::endl;
+	while(this->game_in_progress) {
+		command = this->get_input(tokens);
 
-	std::cout << "Now outside of create_world()" << std::endl;
-	std::cout << this->locations[0] << std::endl;
+		if(this->commands.find(command) != this->commands.end()) {
+			this->commands[command](this, tokens);
+		} else {
+			std::cout << "Could not understand command" << std::endl;
+		}
+
+	}
 }
 
 std::string Game::get_input(std::vector<std::string> tokens) {
