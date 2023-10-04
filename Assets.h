@@ -17,6 +17,8 @@ typedef std::function<void(Game*, std::vector<std::string>)> command;
 class Item {
 	public:
 		Item(std::string name, std::string desc, int calories, float weight);
+		std::string get_name();
+		float get_weight();
 		friend std::ostream& operator<<(std::ostream& out, const Item& item);
 	private:
 		std::string name;
@@ -72,20 +74,26 @@ class Game {
 		// be deletede automatically, freeing up all memory used
 		void create_world();
 		std::map<std::string, command> setup_commands();
-		std::shared_ptr<Location> random_location();
+		Location* random_location();
 		void play();
 		std::string get_input(std::vector<std::string>& tokens);
 		// Commands
 		void print_help(std::vector<std::string> tokens);
 		void talk(std::vector<std::string> tokens);
 		void meet(std::vector<std::string> tokens);
+		void take(std::vector<std::string> tokens);
+		void give(std::vector<std::string> tokens);
+		void go(std::vector<std::string> tokens);
+		void show_items(std::vector<std::string> tokens);
+		void look(std::vector<std::string> tokens);
+		void quit(std::vector<std::string> tokens);
 		// TODO add more commands
 	private:
 		std::map<std::string, command> commands;
 		std::vector<Item> player_inventory;
 		int player_weight;
 		std::vector<std::shared_ptr<Location> > locations;
-		std::shared_ptr<Location> player_location;
+		Location* player_location;
 		int elf_hunger;
 		bool game_in_progress;
 };

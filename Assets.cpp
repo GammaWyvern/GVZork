@@ -19,6 +19,14 @@ Item::Item(std::string name, std::string desc, int calories, float weight) {
 	this->weight = weight;
 }
 
+std::string Item::get_name() {
+	return this->name;
+}
+
+float Item::get_weight() {
+	return this->weight;
+}
+
 std::ostream& operator<< (std::ostream& out, const Item& item) {
 	out << item.name << " (" << item.calories << " calories) - ";
 	out << item.weight << " lb - " << item.desc;
@@ -146,6 +154,7 @@ Game::Game() {
 	this->player_weight = 0;
 	this->elf_hunger = 500;
 	this->player_location = this->random_location();
+	this->player_location->set_visited();
 }
 
 std::map<std::string, command> Game::setup_commands() {
@@ -153,13 +162,19 @@ std::map<std::string, command> Game::setup_commands() {
 	commands["help"] = &Game::print_help;
 	commands["talk"] = &Game::talk;
 	commands["meet"] = &Game::meet;
+	commands["take"] = &Game::take;
+	commands["give"] = &Game::give;
+	commands["go"]   = &Game::go;
+	commands["show"] = &Game::show_items;
+	commands["look"] = &Game::look;
+	commands["quit"] = &Game::quit;
 
 	return commands;
 }
 
-std::shared_ptr<Location> Game::random_location() {
+Location* Game::random_location() {
 	int randInt = rand() % this->locations.size();
-	return this->locations[randInt];
+	return this->locations[randInt].get();
 }
 
 void Game::create_world() {
@@ -171,9 +186,15 @@ void Game::create_world() {
 	keag.add_message("What's up?");
 	kirk->add_npc(keag);
 
+	Item banana("Banana", "It's a fruit", 50, 0.1f);
+	kirk->add_item(banana);
+
+	// Connect locations
 	lib->add_location("North", kirk); 
 	kirk->add_location("South", lib);
 
+	// Push back locations to game vector
+	// IF YOU DON'T THEY WILL BE FREED
 	this->locations.push_back(lib);
 	this->locations.push_back(kirk);
 }
@@ -221,7 +242,8 @@ std::string Game::get_input(std::vector<std::string>& tokens) {
  **************************************/
 
 void Game::print_help(std::vector<std::string> tokens) {
-	std::cout << "Ran help" << std::endl;
+	// TODO implement
+	std::cout << "Implement help()" << std::endl;
 }
 
 void Game::talk(std::vector<std::string> tokens) {
@@ -242,5 +264,73 @@ void Game::talk(std::vector<std::string> tokens) {
 }
 
 void Game::meet(std::vector<std::string> tokens) {
-	std::cout << "Ran meet" << std::endl;
+	// TODO this will only work for npc's with a single word name currently
+	// Go through each NPC
+	for(auto npc=this->player_location->get_npcs().begin(); npc != this->player_location->get_npcs().end(); npc++) {
+		// Go through each potential target in tokens 
+		for(std::string target: tokens) {
+			// If match, print message
+			if(!npc->get_name().compare(target)) {
+				std::cout << npc->get_desc() << std::endl;
+				return;
+			}
+		}
+	}
+
+	std::cout << "NPC not found" << std::endl;
 }
+
+void Game::take(std::vector<std::string> tokens) {
+	// Go through each item in location
+	for(auto item=this->player_location->get_items().begin(); item != this->player_location->get_items().end(); item++) {
+		// Check each token for target item
+		for(std::string target: tokens) {
+			if(!item->get_name().compare(target)) {
+				this->player_inventory.push_back(*item);
+				this->player_weight += item->get_weight();
+				this->player_location->get_items().erase(item);
+				return;
+			}
+		}
+	}	
+
+	std::cout << "Item not found" << std::endl;
+}
+
+void Game::give(std::vector<std::string> tokens) {
+	// TODO implement	
+	std::cout << "Implement give()" << std::endl;
+}
+
+void Game::go(std::vector<std::string> tokens) {
+	// Go through each key/value pair in cur location neighobrs	
+	for(std::pair<std::string, Location*> path: this->player_location->get_locations()) {
+		// Go through each target 
+		for(std::string target: tokens) {
+			// If target matches a direction, go there
+			if(!path.first.compare(target)) {
+				this->player_location = path.second;
+				this->player_location->set_visited();
+				std::cout << *this->player_location << std::endl;
+				return;
+			}
+		}
+	}
+
+	std::cout << "Direction not found" << std::endl;
+}
+
+void Game::show_items(std::vector<std::string> tokens) {
+	// TODO implement	
+	std::cout << "Implement show_item()" << std::endl;
+}
+
+void Game::look(std::vector<std::string> tokens) {
+	std::cout << *this->player_location << std::endl;
+}
+
+void Game::quit(std::vector<std::string> tokens) {
+	// TODO implement	
+	std::cout << "Implement quit()" << std::endl;
+}
+
