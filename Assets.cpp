@@ -282,13 +282,14 @@ void Game::meet(std::vector<std::string> tokens) {
 
 void Game::take(std::vector<std::string> tokens) {
 	// Go through each item in location
-	for(auto item=this->player_location->get_items().begin(); item != this->player_location->get_items().end(); item++) {
+	std::vector<Item>& items = this->player_location->get_items();
+	for(auto item=items.begin(); item != items.end(); item++) {
 		// Check each token for target item
 		for(std::string target: tokens) {
 			if(!item->get_name().compare(target)) {
 				this->player_inventory.push_back(*item);
 				this->player_weight += item->get_weight();
-				this->player_location->get_items().erase(item);
+				items.erase(item);
 				return;
 			}
 		}
