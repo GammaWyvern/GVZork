@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -52,12 +54,10 @@ class Location {
 		void add_npc(NPC npc);
 		void add_location(std::string direction, std::shared_ptr<Location> location);
 		void set_visited();
-		// Getters
 		std::vector<Item>& get_items();
 		std::vector<NPC>& get_npcs();
 		std::map<std::string, Location*>& get_locations();
 		bool get_visited();
-		// Visited funcs
 		friend std::ostream& operator<<(std::ostream& out, const Location& location);
 	private:
 		std::string name;
@@ -71,10 +71,6 @@ class Location {
 class Game {
 	public:
 		Game();
-		// TODO shouldn't need destructor, but I'll have to check for memory
-		// leaks after. But when Game is destructed at the end of main(),
-		// its locations vector should be freed and all shared_ptr should 
-		// be deletede automatically, freeing up all memory used
 		void create_world();
 		std::map<std::string, command> setup_commands();
 		Location* random_location();
@@ -90,7 +86,6 @@ class Game {
 		void show_items(std::vector<std::string> tokens);
 		void look(std::vector<std::string> tokens);
 		void quit(std::vector<std::string> tokens);
-		// TODO add more commands
 		void smile(std::vector<std::string> tokens);
 	private:
 		Item get_random_gift();
