@@ -12,7 +12,18 @@
  **************************************/
 
 Item::Item(std::string name, std::string desc, int calories, float weight) {
-	// TODO add error checking later
+	if (name.empty())
+		throw std::invalid_argument("Name cannot be blank.");
+	
+	if (desc.empty())
+		throw std::invalid_argument("Description cannot be blank.");
+
+	if (calories < 0 || calories > 1000)
+		throw std::invalid_argument("Calories must be between 0 and 1000");
+
+	if (weight < 0 || weight > 500)
+		throw std::invalid_argument("Weight must be between 0 and 500");
+
 	this->name = name;
 	this->desc = desc;
 	this->calories = calories;
@@ -40,6 +51,12 @@ std::ostream& operator<< (std::ostream& out, const Item& item) {
  **************************************/
 
 NPC::NPC(std::string name, std::string desc) {
+	if (name.empty())
+		throw std::invalid_argument("Name cannot be blank.");
+
+	if (desc.empty()) 
+		throw std::invalid_argument("Description cannot be blank.");
+
 	this->name = name;
 	this->desc = desc;	
 	this->message_num = 0;
@@ -88,6 +105,12 @@ std::ostream& operator<< (std::ostream& out, const NPC& npc) {
  **************************************/
 
 Location::Location(std::string name, std::string desc) {
+	if (name.empty())
+		throw std::invalid_argument("Description cannot be blank.");
+
+	if (desc.empty())
+		throw std::invalid_argument("Description cannot be blank.");
+
 	this->name = name;
 	this->desc = desc;
 	this->visited = false;
@@ -168,15 +191,67 @@ Game::Game() {
 
 std::map<std::string, command> Game::setup_commands() {
 	std::map<std::string, command> commands;
+	commands["?"] = &Game::print_help;
+	commands["??"] = &Game::print_help;
+	commands["???"] = &Game::print_help;
 	commands["help"] = &Game::print_help;
+	commands["sos"] = &Game::print_help;
+
 	commands["talk"] = &Game::talk;
+	commands["speak"] = &Game::talk;
+	commands["chat"] = &Game::talk;
+	commands["discuss"] = &Game::talk;
+
 	commands["meet"] = &Game::meet;
-	commands["take"] = &Game::take;
+	commands["encounter"] = &Game::meet;
+	commands["approach"] = &Game::meet;
+	commands["connect"] = &Game::meet;
+
 	commands["give"] = &Game::give;
-	commands["go"]   = &Game::go;
+	commands["offer"] = &Game::give;
+	commands["extend"] = &Game::give;
+	commands["provide"] = &Game::give;
+	commands["contribute"] = &Game::give;
+	commands["bestow"] = &Game::give;
+
+	commands["go"] = &Game::go;
+	commands["leave"] = &Game::go;
+	commands["move"] = &Game::go;
+	commands["travel"] = &Game::go;
+	commands["walk"] = &Game::go;
+	commands["proceed"] = &Game::go;
+	commands["taverse"] = &Game::go;
+
 	commands["show"] = &Game::show_items;
+	commands["items"] = &Game::show_items;
+	commands["display"] = &Game::show_items;
+
 	commands["look"] = &Game::look;
+	commands["peer"] = &Game::look;
+	commands["stare"] = &Game::look;
+	commands["peek"] = &Game::look;
+	commands["watch"] = &Game::look;
+	commands["view"] = &Game::look;
+	commands["examine"] = &Game::look;
+
 	commands["quit"] = &Game::quit;
+	commands["exit"] = &Game::quit;
+	commands["abandon"] = &Game::quit;
+	commands["surrender"] = &Game::quit;
+	commands["withdraw"] = &Game::quit;
+
+	commands["thanks"] = &Game::smile;
+	commands["smile"] = &Game::smile;
+	commands["thank"] = &Game::smile;
+	commands["cheers"] = &Game::smile;
+
+	commands["drop"] = &Game::drop;
+	commands["give"] = &Game::drop;
+	commands["release"] = &Game::drop;
+	commands["discard"] = &Game::drop;
+	commands["dump"] = &Game::drop;
+	commands["ditch"] = &Game::drop;
+	commands["throw"] = &Game::drop;
 
 	return commands;
 }
@@ -347,8 +422,8 @@ void Game::look(std::vector<std::string> tokens) {
 }
 
 void Game::quit(std::vector<std::string> tokens) {
-	// TODO implement	
-	std::cout << "Implement quit()" << std::endl;
+	std::cout << "You have failed the game" << std::endl;
+	this->game_in_progress = false;
 }
 
 void Game::smile(std::vector<std::string> tokens) {
