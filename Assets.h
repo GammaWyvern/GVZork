@@ -86,7 +86,9 @@ class Game {
 		void show_items(std::vector<std::string> tokens);
 		void look(std::vector<std::string> tokens);
 		void quit(std::vector<std::string> tokens);
+		// Own commands
 		void smile(std::vector<std::string> tokens);
+		void drop(std::vector<std::string> tokens);
 	private:
 		Item get_random_gift();
 		std::map<std::string, command> commands;

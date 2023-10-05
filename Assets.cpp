@@ -442,6 +442,10 @@ void Game::smile(std::vector<std::string> tokens) {
 	}
 }
 
+void Game::drop(std::vector<std::string> tokens) {
+	// TODO implement this
+}
+
 /***************************************
  * Game Private Helper Functions 
  **************************************/
