@@ -34,12 +34,15 @@ class NPC {
 		std::string get_desc() const;
 		std::string get_message();
 		void add_message(std::string message);
+		bool get_has_gift();
+		void take_gift();
 		friend std::ostream& operator<<(std::ostream& out, const NPC& npc);
 	private:
 		std::string name;
 		std::string desc;
 		int message_num;
 		std::vector<std::string> messages;
+		bool has_gift;
 };
 
 class Location {
@@ -88,7 +91,9 @@ class Game {
 		void look(std::vector<std::string> tokens);
 		void quit(std::vector<std::string> tokens);
 		// TODO add more commands
+		void smile(std::vector<std::string> tokens);
 	private:
+		Item get_random_gift();
 		std::map<std::string, command> commands;
 		std::vector<Item> player_inventory;
 		float player_weight;

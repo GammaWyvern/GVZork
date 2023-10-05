@@ -43,6 +43,7 @@ NPC::NPC(std::string name, std::string desc) {
 	this->name = name;
 	this->desc = desc;	
 	this->message_num = 0;
+	this->has_gift = true;
 }
 
 std::string NPC::get_name() const {
@@ -65,6 +66,14 @@ std::string NPC::get_message() {
 
 void NPC::add_message(std::string message) {
 	this->messages.push_back(message);
+}
+
+bool NPC::get_has_gift() {
+	return this->has_gift;
+}
+
+void NPC::take_gift() {
+	this->has_gift = false;
 }
 
 std::ostream& operator<< (std::ostream& out, const NPC& npc) {
@@ -287,6 +296,11 @@ void Game::take(std::vector<std::string> tokens) {
 		// Check each token for target item
 		for(std::string target: tokens) {
 			if(!item->get_name().compare(target)) {
+				if(player_weight + item->get_weight() > 30) {
+					std::cout << "You are carrying too much weight!" << std::endl;
+					return;
+				}
+
 				this->player_inventory.push_back(*item);
 				this->player_weight += item->get_weight();
 				items.erase(item);
@@ -300,7 +314,6 @@ void Game::take(std::vector<std::string> tokens) {
 
 void Game::give(std::vector<std::string> tokens) {
 	// TODO implement	
-	std::cout << "Implement give()" << std::endl;
 }
 
 void Game::go(std::vector<std::string> tokens) {
@@ -336,5 +349,37 @@ void Game::look(std::vector<std::string> tokens) {
 void Game::quit(std::vector<std::string> tokens) {
 	// TODO implement	
 	std::cout << "Implement quit()" << std::endl;
+}
+
+void Game::smile(std::vector<std::string> tokens) {
+	Item gift = this->get_random_gift();
+
+	std::vector<NPC>& npcs = this->player_location->get_npcs();
+	for(auto npc = npcs.begin(); npc != npcs.end(); npc++) {
+		for(std::string target: tokens) {
+			if(!npc->get_name().compare(target) && npc->get_has_gift()) {
+				npc->take_gift();
+				this->player_inventory.push_back(gift);
+				this->player_weight += gift.get_weight();
+				return;
+			}				
+		}
+	}
+}
+
+/***************************************
+ * Game Private Helper Functions 
+ **************************************/
+
+Item Game::get_random_gift() {
+	// TODO Add more
+	std::vector<Item> gifts = {
+		Item("Gift1", "A nice present.", 50, 0.5),
+		Item("Gift2", "A nice present.", 50, 0.5),
+		Item("Gift3", "A nice present.", 50, 0.5)
+	};
+
+	int randIndex = rand() % gifts.size();
+	return gifts[randIndex];
 }
 
