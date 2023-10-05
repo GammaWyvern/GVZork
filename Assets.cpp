@@ -240,6 +240,13 @@ std::map<std::string, command> Game::setup_commands() {
 	commands["surrender"] = &Game::quit;
 	commands["withdraw"] = &Game::quit;
 
+	commands["take"] = &Game::take;
+	commands["steal"] = &Game::take;
+	commands["plunder"] = &Game::take;
+	commands["borrow"] = &Game::take;
+	commands["grab"] = &Game::take;
+	commands["pick"] = &Game::take;
+
 	commands["thanks"] = &Game::smile;
 	commands["smile"] = &Game::smile;
 	commands["thank"] = &Game::smile;
@@ -262,28 +269,134 @@ Location* Game::random_location() {
 }
 
 void Game::create_world() {
-	auto lib = std::shared_ptr<Location>(new Location("Library", "Full of books"));
-	auto kirk = std::shared_ptr<Location>(new Location("Kirkoff", "Grab some food"));
+	auto lib = std::shared_ptr<Location>(new Location(" The Library",\
+		"Full of books and students procrastinating on their\
+		 homework."));
+	auto kirk = std::shared_ptr<Location>(new Location("Kirkoff",\
+		"Grab some food! You can play pool too!"));
+	auto alum = std::shared_ptr<Location>(new Location(" The Alumni house",\
+		"Fancy events are had here. It is where the Alumni \
+are most welcome."));
+	auto minimak = std::shared_ptr<Location>(new Location("Mini Mack\
+		 Bridge ", "A fun bridge to walk over."));
+	auto fieldhouse = std::shared_ptr<Location>(new Location(\
+		"Fieldhouse", "Come watch a football game!"));
+	auto mak = std::shared_ptr<Location>(new Location("Mackinac Hall"\
+		,"Where all of the best classes are"));
+	auto rav = std::shared_ptr<Location>(new Location("The Ravines",\
+		"Stay on the path or you might fall a very long way."));
+	auto lotC = std::shared_ptr<Location>(new Location("Parking Lot C"\
+		, "This is not a friendly place between 10:00AM and 3:00PM. \
+Be prepared to FIGHT for a parking spot"));
 
-	NPC keag("Keagen", "Some dude.");
-	keag.add_message("Hey");
-	keag.add_message("What's up?");
-	kirk->add_npc(keag);
+	fieldhouse->add_location("East", alum);
+	fieldhouse->add_location("South", lotC);
+	alum->add_location("West", fieldhouse);
+	alum->add_location("South", lotC);
+	alum->add_location("East", rav);
+	lotC->add_location("North", fieldhouse);
+	lotC->add_location("North", alum);
+	lotC->add_location("East", mak);
+	lotC->add_location("South", lib);
+	mak->add_location("West", lotC);
+	mak->add_location("East", rav);
+	mak->add_location("South", minimak);
+	minimak->add_location("North", mak);
+	minimak->add_location("South", kirk);
+	kirk->add_location("North", minimak);
+	kirk->add_location("West", lib);
+	kirk->add_location("East", rav);
+	lib->add_location("East", kirk);
+	lib->add_location("North", lotC);
+	rav->add_location("West", alum);
+	rav->add_location("West", mak);
+	rav->add_location("West", kirk);
 
-	Item banana("Banana", "It's a fruit", 50, 0.1f);
-	kirk->add_item(banana);
-
-	// Connect locations
-	lib->add_location("North", kirk); 
-	kirk->add_location("South", lib);
-
-	// Push back locations to game vector
-	// IF YOU DON'T THEY WILL BE FREED
-	this->locations.push_back(lib);
+	this->locations.push_back(fieldhouse);
+	this->locations.push_back(alum);
+	this->locations.push_back(lotC);
+	this->locations.push_back(mak);
+	this->locations.push_back(minimak);
 	this->locations.push_back(kirk);
+	this->locations.push_back(lib);
+	this->locations.push_back(rav);
+
+	NPC cas("Casandra", "The girl that wants your parking spot.");
+	NPC troll("Troll", "He lives under the bridge.");
+	NPC toby("Toby", "The campus healer");
+	NPC paul("Paul", "A football player.");
+	NPC kevin("Kevin", "Cashier for Panda express.");
+
+	cas.add_message("Hey, are you leaving soon?");
+	cas.add_message("Can I have your parking spot?");
+	cas.add_message("I was actually here first, go find another spot");
+	lotC->add_npc(cas);
+
+	troll.add_message("I have a riddle for you.");
+	troll.add_message("I forgot my riddle... UGH!!");
+	troll.add_message("You can cross, don't let me stop you.");
+	minimak->add_npc(troll);
+
+	toby.add_message("I can heal you.");
+	toby.add_message("I can get rid of the cold that I know you have");
+	toby.add_message("I'm tired... why is everyone sick????");
+	mak->add_npc(toby);
+
+	paul.add_message("I can catch a football!");
+	paul.add_message("watch me throw this football.");
+	paul.add_message("I hurt my shoulder! Someone find Toby");
+	fieldhouse->add_npc(paul);
+
+	kevin.add_message("Your total is $12.75.");
+	kevin.add_message("I need a pay raise.");
+	kevin.add_message("Do you want a spring rolls or crab rangoons?");
+	kirk->add_npc(kevin);
+
+	Item cookie("Chocolate chip cookie", "Cookie baked with love by \
+your grandma.", 50, 2.3684);
+	Item stick("Stick", "It was once attached to a tree, \
+now it is not.", 0, 5.346);
+	Item rang("Crab Rangoons", "A delicacy from Panda Express.",\
+		70, 4.6);
+	Item milk("Chocolate Milk", "A cup of chocolate milk", 90, 2.9f);
+	Item fball("Football", "The football thrown by Paul", 0, 4.34f);
+	Item sandwich("Turkey sandwich", "Turkey, tomato, lettuce, \
+cheese, mustard, and a lot of bacon. What more could you ask for?",\
+100, 9.994f);
+	Item apple("Apple", "A honey crisp apple", 50, 2.635f);
+	Item rock("Rock", "A very large rock.", 0, 15.3468f);
+	Item cake("Slice of Cake", "The cake is chocolate...\
+and very dense", 250, 12.737f);
+	Item coke("Can of Coke", "A fresh, cold, can of Coke", 200, 7.57f);
+	Item gift("gift", "This is a gift, it is given only to those who\
+are kind.", 50, 0.01f);
+	
+	fieldhouse->add_item(fball);
+	alum->add_item(cookie);
+	mak->add_item(milk);
+	mak->add_item(cake);
+	lib->add_item(apple);
+	kirk->add_item(rang);
+	kirk->add_item(coke);
+	lotC->add_item(sandwich);
+	minimak->add_item(stick);
+	rav->add_item(rock);
 }
 
+
 void Game::play() {
+	std::cout << " \t \t Welcome to GVZork \n \
+---------------------------------------------------------------\n \n \
+THE CAMPUS IS IN TROUBLE!!!\n\
+ The only person who can save the campus is the elf.\n\
+ The elf lives in the ravines behind campus and he\
+is hungry!!! \n There are some items around campus that the \
+elf might want to eat.\n Keep in mind: The elf needs 500 calories \
+worth of food. \n Also, you are only able to carry 30 pounds worth \
+of items at a time. \n \
+You must make sure the elf gets his food or else campus will be \
+doomed \n \n" << std::endl;
+
 	std::string command;
 	std::vector<std::string> tokens;
 
