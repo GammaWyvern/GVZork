@@ -93,3 +93,4 @@ std::ostream& operator<<(std::ostream& out, const Location& location) {
 
 	return out;
 }
+
