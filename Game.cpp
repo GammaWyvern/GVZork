@@ -57,6 +57,8 @@ std::map<std::string, command> Game::setup_commands() {
 	commands["contribute"] = &Game::give;
 	commands["bestow"] = &Game::give;
 	commands["drop"] = &Game::give;
+	commands["put"] = &Game::give;
+	commands["set"] = &Game::give;
 
 	commands["go"] = &Game::go;
 	commands["leave"] = &Game::go;
