@@ -7,7 +7,11 @@
 #include <memory>
 
 /***************************************
- * Location Functions
+ * Location Class Definitions
+ *
+ * Authors:
+ * 	Keri Lamberjack
+ * 	Keagen Talsma 
  **************************************/
 
 Location::Location(std::string name, std::string desc) {

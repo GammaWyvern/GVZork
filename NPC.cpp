@@ -4,7 +4,11 @@
 #include <vector>
 
 /***************************************
- * NPC Functions
+ * NPC Class Definitions
+ *
+ * Authors:
+ * 	Keri Lamberjack
+ * 	Keagen Talsma 
  **************************************/
 
 NPC::NPC(std::string name, std::string desc) {

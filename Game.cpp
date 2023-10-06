@@ -8,7 +8,11 @@
 #include <memory>
 
 /***************************************
- * Game Functions
+ * Game Class Definitions
+ *
+ * Authors:
+ * 	Keri Lamberjack
+ * 	Keagen Talsma 
  **************************************/
 
 Game::Game() {

@@ -3,7 +3,11 @@
 #include <iostream>
 
 /***************************************
- * Item Functions
+ * Location Class Definitions
+ *
+ * Authors:
+ * 	Keri Lamberjack
+ * 	Keagen Talsma 
  **************************************/
 
 Item::Item(std::string name, std::string desc, int calories, float weight) {
