@@ -1,0 +1,132 @@
+// Create a new portal to the world of randomness
+auto randomPortal = std::shared_ptr<Location>(new Location("Random Portal", "Enter the world of unexpected oddities!"));
+
+// Connect the Random Portal to your existing world
+randomPortal->add_location("North", fieldhouse);
+randomPortal->add_location("South", mak);
+randomPortal->add_location("East", lib);
+randomPortal->add_location("West", kirk);
+
+// Create new random-themed locations
+auto bananaForest = std::shared_ptr<Location>(new Location("Banana Forest", "A forest where banana trees grow instead of regular trees."));
+auto rubberChickenFarm = std::shared_ptr<Location>(new Location("Rubber Chicken Farm", "A farm filled with rubber chickens of all sizes."));
+auto spaghettiCanyon = std::shared_ptr<Location>(new Location("Spaghetti Canyon", "A deep canyon with rivers of spaghetti sauce flowing through it."));
+auto fishbowlDesert = std::shared_ptr<Location>(new Location("Fishbowl Desert", "A vast desert filled with fishbowls instead of sand."));
+auto pillowCastle = std::shared_ptr<Location>(new Location("Pillow Castle", "A castle made entirely of fluffy pillows."));
+
+// Connect random-themed locations
+bananaForest->add_location("North", randomPortal);
+rubberChickenFarm->add_location("East", randomPortal);
+spaghettiCanyon->add_location("South", randomPortal);
+fishbowlDesert->add_location("West", randomPortal);
+pillowCastle->add_location("North", bananaForest);
+
+// Add these new random-themed locations to the game
+this->locations.push_back(randomPortal);
+this->locations.push_back(bananaForest);
+this->locations.push_back(rubberChickenFarm);
+this->locations.push_back(spaghettiCanyon);
+this->locations.push_back(fishbowlDesert);
+this->locations.push_back(pillowCastle);
+
+// Create random-themed NPCs
+NPC bananaGuardian("Banana Guardian", "A guardian who protects the sacred banana trees.");
+NPC rubberChickenFarmer("Rubber Chicken Farmer", "A farmer who breeds rubber chickens for unknown purposes.");
+NPC spaghettiExplorer("Spaghetti Explorer", "An explorer who searches for the elusive 'Spaghettisaurus.'");
+NPC fishbowlNomad("Fishbowl Nomad", "A nomad who roams the fishbowl desert in search of fish.");
+NPC pillowKing("Pillow King", "The king of the Pillow Castle who loves a comfy throne.");
+
+// Add funny dialogue for the random-themed NPCs
+bananaGuardian.add_message("Beware of the banana peels!");
+bananaGuardian.add_message("Only those who truly appreciate bananas may pass.");
+rubberChickenFarmer.add_message("Want to hear my rubber chicken orchestra?");
+rubberChickenFarmer.add_message("I'm training my rubber chickens to become astronauts.");
+spaghettiExplorer.add_message("I heard the Spaghettisaurus is around here somewhere!");
+spaghettiExplorer.add_message("Don't slip on the sauce.");
+fishbowlNomad.add_message("The fish here are quite talkative.");
+fishbowlNomad.add_message("Fishbowl sandcastles are the best kind of sandcastles.");
+pillowKing.add_message("Welcome to the fluffiest castle in the world!");
+pillowKing.add_message("Care for a pillow jousting match?");
+
+// Add random-themed NPCs to the locations
+bananaForest->add_npc(bananaGuardian);
+rubberChickenFarm->add_npc(rubberChickenFarmer);
+spaghettiCanyon->add_npc(spaghettiExplorer);
+fishbowlDesert->add_npc(fishbowlNomad);
+pillowCastle->add_npc(pillowKing);
+
+// Create random-themed items
+Item bananaPeel("Banana Peel", "A slippery banana peel that's just waiting to cause chaos.", 0, 0.02f);
+Item rubberChickenHat("Rubber Chicken Hat", "A hat made of rubber chickens that cluck when you wear it.", 0, 0.3f);
+Item spaghettiLasso("Spaghetti Lasso", "A lasso made of spaghetti, perfect for capturing Spaghettisauruses.", 0, 0.5f);
+Item fishbowlHelmet("Fishbowl Helmet", "A helmet made of a fishbowl for underwater exploration.", 0, 0.4f);
+Item fluffyPillow("Fluffy Pillow", "A pillow so fluffy that it's like sleeping on a cloud.", 0, 0.7f);
+
+// Add random-themed items to the random-themed locations
+bananaForest->add_item(bananaPeel);
+rubberChickenFarm->add_item(rubberChickenHat);
+spaghettiCanyon->add_item(spaghettiLasso);
+fishbowlDesert->add_item(fishbowlHelmet);
+pillowCastle->add_item(fluffyPillow);
+
+// Create new random-themed locations
+auto jellybeanJungle = std::shared_ptr<Location>(new Location("Jellybean Jungle", "A jungle where the trees bear jellybeans instead of fruits."));
+auto rubberDuckPond = std::shared_ptr<Location>(new Location("Rubber Duck Pond", "A pond filled with giant rubber ducks that quack when you touch them."));
+auto cloudCity = std::shared_ptr<Location>(new Location("Cloud City", "A city built on clouds with fluffy skyscrapers."));
+auto chocolateVolcano = std::shared_ptr<Location>(new Location("Chocolate Volcano", "A volcano that erupts with molten chocolate instead of lava."));
+auto marshmallowBeach = std::shared_ptr<Location>(new Location("Marshmallow Beach", "A beach with soft, edible marshmallow sand."));
+
+// Connect random-themed locations
+jellybeanJungle->add_location("North", randomPortal);
+rubberDuckPond->add_location("East", randomPortal);
+cloudCity->add_location("South", randomPortal);
+chocolateVolcano->add_location("West", randomPortal);
+marshmallowBeach->add_location("North", jellybeanJungle);
+
+// Add these new random-themed locations to the game
+this->locations.push_back(jellybeanJungle);
+this->locations.push_back(rubberDuckPond);
+this->locations.push_back(cloudCity);
+this->locations.push_back(chocolateVolcano);
+this->locations.push_back(marshmallowBeach);
+
+// Create random-themed NPCs for new locations
+NPC jellybeanCollector("Jellybean Collector", "An enthusiast who can't get enough of jellybeans.");
+NPC rubberDuckWatcher("Rubber Duck Watcher", "An observer who spends hours watching the rubber ducks.");
+NPC cloudMayor("Cloud Mayor", "The mayor of Cloud City who loves to float around in the clouds.");
+NPC chocolateConnoisseur("Chocolate Connoisseur", "A chocolate lover who samples the volcano's eruptions.");
+NPC marshmallowLounger("Marshmallow Lounger", "A person lounging on marshmallow sands, living the dream.");
+
+// Add funny dialogue for the random-themed NPCs
+jellybeanCollector.add_message("Jellybeans, jellybeans everywhere!");
+jellybeanCollector.add_message("Would you like to trade for some rare jellybeans?");
+rubberDuckWatcher.add_message("Sometimes, I think they're trying to communicate.");
+rubberDuckWatcher.add_message("I've written a book on the secret lives of rubber ducks.");
+cloudMayor.add_message("Welcome to Cloud City! Would you like a cloud tour?");
+cloudMayor.add_message("We only have rainy days when we run out of cotton candy clouds.");
+chocolateConnoisseur.add_message("Ah, the aroma of molten chocolate!");
+chocolateConnoisseur.add_message("I've been looking for the perfect chocolate fountain.");
+marshmallowLounger.add_message("Can you believe this beach is edible?");
+marshmallowLounger.add_message("I've built a marshmallow castle here, but it keeps melting.");
+
+// Add random-themed NPCs to the new locations
+jellybeanJungle->add_npc(jellybeanCollector);
+rubberDuckPond->add_npc(rubberDuckWatcher);
+cloudCity->add_npc(cloudMayor);
+chocolateVolcano->add_npc(chocolateConnoisseur);
+marshmallowBeach->add_npc(marshmallowLounger);
+
+// Create edible items for the new locations
+Item jellybeans("Jellybeans", "Colorful and delicious jellybeans.", 20, 0.05f);
+Item chocolateBar("Chocolate Bar", "A classic chocolate bar for sweet cravings.", 200, 0.3f);
+Item cottonCandy("Cotton Candy", "Fluffy cotton candy on a stick.", 150, 0.2f);
+Item marshmallow("Marshmallow", "A fluffy and sweet marshmallow.", 50, 0.05f);
+Item cloudCotton("Cloud Cotton", "A piece of fluffy cloud cotton.", 10, 0.01f);
+
+// Add edible items to the new random-themed locations
+jellybeanJungle->add_item(jellybeans);
+rubberDuckPond->add_item(rubberDuck);
+cloudCity->add_item(cottonCandy);
+chocolateVolcano->add_item(chocolateBar);
+marshmallowBeach->add_item(marshmallow);
+marshmallowBeach->add_item(cloudCotton);
