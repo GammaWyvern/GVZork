@@ -35,6 +35,12 @@ void Location::add_npc(NPC npc) {
 }
 
 void Location::add_location(std::string direction, std::shared_ptr<Location> location) {
+	if(direction.empty())
+		throw std::invalid_argument("Direction cannot be blank.");
+
+	if(this->neighbors.find(direction) != this->neighbors.end())
+		throw std::invalid_argument("Direction already exists");
+
 	this->neighbors[direction] = location.get();
 }
 

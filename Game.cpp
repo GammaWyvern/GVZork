@@ -328,11 +328,12 @@ void Game::give(std::vector<std::string> tokens) {
 			if(item->get_name().find(target) != std::string::npos) {
 				std::cout << "You have dropped the " << \
 					item->get_name() << std::endl;
-				this->player_location->add_item(*item);
 
 				// Elf
 				if(!this->player_location->get_name().compare("The Ravines")) {
 					this->feed_elf(*item);
+				} else {
+					this->player_location->add_item(*item);
 				}
 
 				items.erase(item);
