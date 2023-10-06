@@ -16,6 +16,14 @@ class Game;
 
 typedef std::function<void(Game*, std::vector<std::string>)> command;
 
+/***************************************
+ * Class Declarations
+ *
+ * Authors:
+ * 	Keri Lamberjack
+ * 	Keagen Talsma 
+ **************************************/
+
 
 
 /***********************************************************
