@@ -21,6 +21,7 @@ class Item {
 		Item(std::string name, std::string desc, int calories, float weight);
 		std::string get_name();
 		float get_weight();
+		int get_calories();
 		friend std::ostream& operator<<(std::ostream& out, const Item& item);
 	private:
 		std::string name;
@@ -57,6 +58,7 @@ class Location {
 		std::vector<Item>& get_items();
 		std::vector<NPC>& get_npcs();
 		std::map<std::string, Location*>& get_locations();
+		std::string get_name();
 		bool get_visited();
 		friend std::ostream& operator<<(std::ostream& out, const Location& location);
 	private:
@@ -90,7 +92,11 @@ class Game {
 		void smile(std::vector<std::string> tokens);
 		void drop(std::vector<std::string> tokens);
 	private:
+		// Private helper functions
 		Item get_random_gift();
+		bool give_player_item(Item item);
+		void feed_elf(Item item);
+		// Instance vars
 		std::map<std::string, command> commands;
 		std::vector<Item> player_inventory;
 		float player_weight;

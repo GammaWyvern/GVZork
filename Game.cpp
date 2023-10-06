@@ -8,175 +8,6 @@
 #include <memory>
 
 /***************************************
- * Item Functions
- **************************************/
-
-Item::Item(std::string name, std::string desc, int calories, float weight) {
-	if (name.empty())
-		throw std::invalid_argument("Name cannot be blank.");
-	
-	if (desc.empty())
-		throw std::invalid_argument("Description cannot be blank.");
-
-	if (calories < 0 || calories > 1000)
-		throw std::invalid_argument("Calories must be between 0 and 1000");
-
-	if (weight < 0 || weight > 500)
-		throw std::invalid_argument("Weight must be between 0 and 500");
-
-	this->name = name;
-	this->desc = desc;
-	this->calories = calories;
-	this->weight = weight;
-}
-
-std::string Item::get_name() {
-	return this->name;
-}
-
-float Item::get_weight() {
-	return this->weight;
-}
-
-std::ostream& operator<< (std::ostream& out, const Item& item) {
-	out << item.name << " (" << item.calories << " calories) - ";
-	out << item.weight << " lb - " << item.desc;
-	return out;
-}
-
-
-
-/***************************************
- * NPC Functions
- **************************************/
-
-NPC::NPC(std::string name, std::string desc) {
-	if (name.empty())
-		throw std::invalid_argument("Name cannot be blank.");
-
-	if (desc.empty()) 
-		throw std::invalid_argument("Description cannot be blank.");
-
-	this->name = name;
-	this->desc = desc;	
-	this->message_num = 0;
-	this->has_gift = true;
-}
-
-std::string NPC::get_name() const {
-	return this->name;
-}
-
-std::string NPC::get_desc() const {
-	return this->desc;
-}
-
-std::string NPC::get_message() {
-	if(!this->messages.size()) {
-		return "They have nothing to say";
-	}
-
-	std::string message = this->messages[this->message_num];
-	this->message_num = (this->message_num + 1) % this->messages.size();
-	return message;
-}
-
-void NPC::add_message(std::string message) {
-	this->messages.push_back(message);
-}
-
-bool NPC::get_has_gift() {
-	return this->has_gift;
-}
-
-void NPC::take_gift() {
-	this->has_gift = false;
-}
-
-std::ostream& operator<< (std::ostream& out, const NPC& npc) {
-	out << npc.name;
-	return out;
-}
-
-
-
-/***************************************
- * Location Functions
- **************************************/
-
-Location::Location(std::string name, std::string desc) {
-	if (name.empty())
-		throw std::invalid_argument("Description cannot be blank.");
-
-	if (desc.empty())
-		throw std::invalid_argument("Description cannot be blank.");
-
-	this->name = name;
-	this->desc = desc;
-	this->visited = false;
-}
-
-void Location::add_item(Item item) {
-	this->items.push_back(item);
-}
-
-void Location::add_npc(NPC npc) {
-	this->npcs.push_back(npc);
-}
-
-void Location::add_location(std::string direction, std::shared_ptr<Location> location) {
-	this->neighbors[direction] = location.get();
-}
-
-void Location::set_visited() {
-	this->visited = true;
-}
-
-std::vector<Item>& Location::get_items() {
-	return this->items;
-}
-
-std::vector<NPC>& Location::get_npcs() {
-	return this->npcs;
-}
-
-std::map<std::string, Location*>& Location::get_locations() {
-	return this->neighbors;
-}
-
-bool Location::get_visited() {
-	return this->visited;
-}
-
-std::ostream& operator<<(std::ostream& out, const Location& location) {
-	out << location.name << " - " << location.desc << std::endl; 
-	// NPCs
-	out << std::endl << "You see the following NPCs:" << std::endl;
-	for(NPC npc: location.npcs)
-		out << "\t- " << npc << std::endl;
-	out << std::endl;
-	// Items
-	out << "You see the following Items:" << std::endl;
-	for(Item item: location.items)
-		out << "\t- " << item << std::endl; 
-	out << std::endl;
-	// Locations
-	out << "You can go in the following directions:" << std::endl;
-	for(std::pair<std::string, Location*> dir: location.neighbors) {
-		out << "\t- " << dir.first << " - "; 
-		if(dir.second->get_visited()) {
-			out << dir.second->name << " (Visited)" << std::endl;
-		} else {
-			out << "Unknown" << std::endl;
-		}
-	}
-
-	return out;
-}
-
-
-
-/***************************************
  * Game Functions
  **************************************/
 
@@ -207,18 +38,27 @@ std::map<std::string, command> Game::setup_commands() {
 	commands["approach"] = &Game::meet;
 	commands["connect"] = &Game::meet;
 
+	commands["take"] = &Game::take;
+	commands["steal"] = &Game::take;
+	commands["plunder"] = &Game::take;
+	commands["borrow"] = &Game::take;
+	commands["grab"] = &Game::take;
+	commands["pick"] = &Game::take;
+
 	commands["give"] = &Game::give;
 	commands["offer"] = &Game::give;
 	commands["extend"] = &Game::give;
 	commands["provide"] = &Game::give;
 	commands["contribute"] = &Game::give;
 	commands["bestow"] = &Game::give;
+	commands["drop"] = &Game::give;
 
 	commands["go"] = &Game::go;
 	commands["leave"] = &Game::go;
 	commands["move"] = &Game::go;
 	commands["travel"] = &Game::go;
 	commands["walk"] = &Game::go;
+	commands["run"] = &Game::go;
 	commands["proceed"] = &Game::go;
 	commands["taverse"] = &Game::go;
 
@@ -240,20 +80,15 @@ std::map<std::string, command> Game::setup_commands() {
 	commands["surrender"] = &Game::quit;
 	commands["withdraw"] = &Game::quit;
 
-	commands["take"] = &Game::take;
-	commands["steal"] = &Game::take;
-	commands["plunder"] = &Game::take;
-	commands["borrow"] = &Game::take;
-	commands["grab"] = &Game::take;
-	commands["pick"] = &Game::take;
-
 	commands["thanks"] = &Game::smile;
 	commands["smile"] = &Game::smile;
 	commands["thank"] = &Game::smile;
 	commands["cheers"] = &Game::smile;
+	commands["hug"] = &Game::smile;
+	commands["kiss"] = &Game::smile;
+	commands["smooch"] = &Game::smile;
 
-	commands["drop"] = &Game::drop;
-	commands["give"] = &Game::drop;
+	commands["burn"] = &Game::drop;
 	commands["release"] = &Game::drop;
 	commands["discard"] = &Game::drop;
 	commands["dump"] = &Game::drop;
@@ -368,8 +203,6 @@ cheese, mustard, and a lot of bacon. What more could you ask for?",\
 	Item cake("Slice of Cake", "The cake is chocolate...\
 and very dense", 250, 12.737f);
 	Item coke("Can of Coke", "A fresh, cold, can of Coke", 200, 7.57f);
-	Item gift("gift", "This is a gift, it is given only to those who\
-are kind.", 50, 0.01f);
 	
 	fieldhouse->add_item(fball);
 	alum->add_item(cookie);
@@ -444,13 +277,9 @@ void Game::print_help(std::vector<std::string> tokens) {
 }
 
 void Game::talk(std::vector<std::string> tokens) {
-	// TODO this will only work for npc's with a single word name currently
-	// Go through each NPC
 	for(auto npc=this->player_location->get_npcs().begin(); npc != this->player_location->get_npcs().end(); npc++) {
-		// Go through each potential target in tokens 
 		for(std::string target: tokens) {
-			// If match, print message
-			if(!npc->get_name().compare(target)) {
+			if(npc->get_name().find(target) != std::string::npos) {
 				std::cout << npc->get_message() << std::endl;
 				return;
 			}
@@ -461,13 +290,9 @@ void Game::talk(std::vector<std::string> tokens) {
 }
 
 void Game::meet(std::vector<std::string> tokens) {
-	// TODO this will only work for npc's with a single word name currently
-	// Go through each NPC
 	for(auto npc=this->player_location->get_npcs().begin(); npc != this->player_location->get_npcs().end(); npc++) {
-		// Go through each potential target in tokens 
 		for(std::string target: tokens) {
-			// If match, print message
-			if(!npc->get_name().compare(target)) {
+			if(npc->get_name().find(target) != std::string::npos) {
 				std::cout << npc->get_desc() << std::endl;
 				return;
 			}
@@ -478,20 +303,12 @@ void Game::meet(std::vector<std::string> tokens) {
 }
 
 void Game::take(std::vector<std::string> tokens) {
-	// Go through each item in location
 	std::vector<Item>& items = this->player_location->get_items();
 	for(auto item=items.begin(); item != items.end(); item++) {
-		// Check each token for target item
 		for(std::string target: tokens) {
-			if(!item->get_name().compare(target)) {
-				if(player_weight + item->get_weight() > 30) {
-					std::cout << "You are carrying too much weight!" << std::endl;
-					return;
-				}
-
-				this->player_inventory.push_back(*item);
-				this->player_weight += item->get_weight();
-				items.erase(item);
+			if(item->get_name().find(target) != std::string::npos) {
+				if(this->give_player_item(*item))
+					items.erase(item);
 				return;
 			}
 		}
@@ -501,15 +318,29 @@ void Game::take(std::vector<std::string> tokens) {
 }
 
 void Game::give(std::vector<std::string> tokens) {
-	// TODO implement	
+	std::vector<Item>& items = this->player_inventory;
+	for(auto item=items.begin(); item != items.end(); item++) {
+		for(std::string target: tokens) {
+			if(item->get_name().find(target) != std::string::npos) {
+				std::cout << "You have dropped the " << \
+					item->get_name() << std::endl;
+				this->player_location->add_item(*item);
+
+				// Elf
+				if(!this->player_location->get_name().compare("The Ravines")) {
+					this->feed_elf(*item);
+				}
+
+				items.erase(item);
+				return;
+			}
+		}
+	}	
 }
 
 void Game::go(std::vector<std::string> tokens) {
-	// Go through each key/value pair in cur location neighobrs	
 	for(std::pair<std::string, Location*> path: this->player_location->get_locations()) {
-		// Go through each target 
 		for(std::string target: tokens) {
-			// If target matches a direction, go there
 			if(!path.first.compare(target)) {
 				this->player_location = path.second;
 				this->player_location->set_visited();
@@ -535,7 +366,7 @@ void Game::look(std::vector<std::string> tokens) {
 }
 
 void Game::quit(std::vector<std::string> tokens) {
-	std::cout << "You have failed the game" << std::endl;
+	std::cout << "You have failed the game, L BOZO!" << std::endl;
 	this->game_in_progress = false;
 }
 
@@ -545,33 +376,88 @@ void Game::smile(std::vector<std::string> tokens) {
 	std::vector<NPC>& npcs = this->player_location->get_npcs();
 	for(auto npc = npcs.begin(); npc != npcs.end(); npc++) {
 		for(std::string target: tokens) {
-			if(!npc->get_name().compare(target) && npc->get_has_gift()) {
-				npc->take_gift();
-				this->player_inventory.push_back(gift);
-				this->player_weight += gift.get_weight();
-				return;
+			if(npc->get_name().find(target) != std::string::npos) {
+				if(npc->get_has_gift()) {
+					std::cout << "Awww, thanks! Here, take this "\
+						<< gift.get_name() << std::endl;
+					if(this->give_player_item(gift))
+						npc->take_gift();
+					return;
+				} else {
+					std::cout << "That much flattery won't get\
+						you anything..." << std::endl;
+					return;
+				}
 			}				
 		}
 	}
 }
 
 void Game::drop(std::vector<std::string> tokens) {
-	// TODO implement this
+	std::vector<Item>& items = this->player_inventory;
+	for(auto item=items.begin(); item != items.end(); item++) {
+		for(std::string target: tokens) {
+			if(item->get_name().find(target) != std::string::npos) {
+				std::cout << "The " << item->get_name() << " is\
+					gone forever..." << std::endl;
+				items.erase(item);
+				return;
+			}
+		}
+	}	
 }
 
 /***************************************
  * Game Private Helper Functions 
  **************************************/
 
+bool Game::give_player_item(Item item) {
+	if(this->player_weight + item.get_weight() > 30) {
+		std::cout << "You connot carry the weight of the " << item.get_name() << std::endl;
+		return false;
+	} else {
+		this->player_inventory.push_back(item);
+		this->player_weight += item.get_weight();
+		return true;
+	}
+}
+
 Item Game::get_random_gift() {
-	// TODO Add more
 	std::vector<Item> gifts = {
-		Item("Gift1", "A nice present.", 50, 0.5),
-		Item("Gift2", "A nice present.", 50, 0.5),
-		Item("Gift3", "A nice present.", 50, 0.5)
+		Item("Cupcake", "A delicous cupcake. Why was this \
+				just in their pocket?", 50, 0.5),
+		Item("Golden Watch", "An ornate watch that looks \
+				hundreds of years old.", 0, 1),
+		Item("Dirt", "It's just dirt, but they really wanted \
+				you to have it! At least there's a \
+				couple edible bugs in it.", 2, 0.5) 
 	};
 
 	int randIndex = rand() % gifts.size();
 	return gifts[randIndex];
+}
+
+void Game::feed_elf(Item item) {
+	if(item.get_calories()) {
+		std::cout << "The elf notices the item you set down, \
+			and he looks pleased. He gobles up the " << \
+			item.get_name() << "." << std::endl;
+		this->elf_hunger -= item.get_calories();
+
+		// Check if game is over
+		if(this->elf_hunger <= 0) {
+			std::cout << "The elf is now fully satiated! \
+				He can now use his magical powers to \
+				save the GV campus. Congradulations!" \
+				<< std::endl;
+			this->game_in_progress = false;
+		}
+	} else {
+		std::cout << "The elf notices the item \
+			you set down, but he is displeased! \
+			He uses his magical powers to \
+			teleport you away!" << std::endl;
+		this->player_location = this->random_location();
+	}
 }
 
