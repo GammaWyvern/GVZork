@@ -249,6 +249,7 @@ void Game::play() {
 	while(this->game_in_progress) {
 		command = this->get_input(tokens);
 
+		// Check if command exists, then run
 		if(this->commands.find(command) != this->commands.end()) {
 			this->commands[command](this, tokens);
 		} else {
@@ -263,11 +264,13 @@ std::string Game::get_input(std::vector<std::string>& tokens) {
 	std::string token;
 	std::string command;
 
+	// Put first word as command
 	std::cin >> command;
 	if(std::cin.peek() == '\n') {
 		return command;
 	}
 
+	// Put rest of line into tokens as individual words
 	while(std::cin >> token) {
 		tokens.push_back(token);
 		
@@ -307,8 +310,11 @@ void Game::print_help(std::vector<std::string> tokens) {
 }
 
 void Game::talk(std::vector<std::string> tokens) {
-	for(auto npc=this->player_location->get_npcs().begin(); npc != this->player_location->get_npcs().end(); npc++) {
-		for(std::string target: tokens) {
+	// Go through each potential target in tokens
+	for(std::string target: tokens) {
+		// Iterate through each NPC at location
+		for(auto npc=this->player_location->get_npcs().begin(); npc != this->player_location->get_npcs().end(); npc++) {
+			// Check if target token is in npc's name
 			if(npc->get_name().find(target) != std::string::npos) {
 				std::cout << npc->get_message() << std::endl;
 				return;
@@ -320,8 +326,11 @@ void Game::talk(std::vector<std::string> tokens) {
 }
 
 void Game::meet(std::vector<std::string> tokens) {
-	for(auto npc=this->player_location->get_npcs().begin(); npc != this->player_location->get_npcs().end(); npc++) {
-		for(std::string target: tokens) {
+	// Go through each potential target in tokens
+	for(std::string target: tokens) {
+		// Iterate through each NPC at location
+		for(auto npc=this->player_location->get_npcs().begin(); npc != this->player_location->get_npcs().end(); npc++) {
+			// Check if target token is in npc's name
 			if(npc->get_name().find(target) != std::string::npos) {
 				std::cout << npc->get_desc() << std::endl;
 				return;
@@ -334,8 +343,12 @@ void Game::meet(std::vector<std::string> tokens) {
 
 void Game::take(std::vector<std::string> tokens) {
 	std::vector<Item>& items = this->player_location->get_items();
-	for(auto item=items.begin(); item != items.end(); item++) {
-		for(std::string target: tokens) {
+
+	// Go through each potential target in tokens
+	for(std::string target: tokens) {
+		// Iterate over each item at location
+		for(auto item=items.begin(); item != items.end(); item++) {
+			// Check if target token is in item's name
 			if(item->get_name().find(target) != std::string::npos) {
 				if(this->give_player_item(*item))
 					items.erase(item);
@@ -349,8 +362,12 @@ void Game::take(std::vector<std::string> tokens) {
 
 void Game::give(std::vector<std::string> tokens) {
 	std::vector<Item>& items = this->player_inventory;
-	for(auto item=items.begin(); item != items.end(); item++) {
-		for(std::string target: tokens) {
+
+	// Go through each potential target in tokens
+	for(std::string target: tokens) {
+		// Iterate over each item at location
+		for(auto item=items.begin(); item != items.end(); item++) {
+			// Check if target token is in item's name
 			if(item->get_name().find(target) != std::string::npos) {
 				std::cout << "You have dropped the " << \
 					item->get_name() << std::endl;
@@ -371,8 +388,11 @@ void Game::give(std::vector<std::string> tokens) {
 }
 
 void Game::go(std::vector<std::string> tokens) {
-	for(std::pair<std::string, Location*> path: this->player_location->get_locations()) {
-		for(std::string target: tokens) {
+	// Go through each potential target in tokens
+	for(std::string target: tokens) {
+		// Go through each direction/Location pair in neighbors map
+		for(std::pair<std::string, Location*> path: this->player_location->get_locations()) {
+			// Check if any token is a valid direction
 			if(!path.first.compare(target)) {
 				this->player_location = path.second;
 				this->player_location->set_visited();
@@ -406,8 +426,11 @@ void Game::smile(std::vector<std::string> tokens) {
 	Item gift = this->get_random_gift();
 
 	std::vector<NPC>& npcs = this->player_location->get_npcs();
-	for(auto npc = npcs.begin(); npc != npcs.end(); npc++) {
-		for(std::string target: tokens) {
+	// Go through each potential target in tokens
+	for(std::string target: tokens) {
+		// Iterate over npcs in current location
+		for(auto npc = npcs.begin(); npc != npcs.end(); npc++) {
+			// Check if npc's name contains the target
 			if(npc->get_name().find(target) != std::string::npos) {
 				if(npc->get_has_gift()) {
 					std::cout << "Awww, thanks! Here, take this "
@@ -427,8 +450,11 @@ void Game::smile(std::vector<std::string> tokens) {
 
 void Game::drop(std::vector<std::string> tokens) {
 	std::vector<Item>& items = this->player_inventory;
-	for(auto item=items.begin(); item != items.end(); item++) {
-		for(std::string target: tokens) {
+	// Go through each potential target in tokens
+	for(std::string target: tokens) {
+		// Iterate over items in current location
+		for(auto item=items.begin(); item != items.end(); item++) {
+			// Check if item's name contains the target
 			if(item->get_name().find(target) != std::string::npos) {
 				std::cout << "The " << item->get_name() << " is "
 					"gone forever..." << std::endl;
@@ -473,6 +499,7 @@ Item Game::get_random_gift() {
 
 void Game::feed_elf(Item item) {
 	if(item.get_calories()) {
+		// Feed elf
 		std::cout << "The elf notices the item you set down, "
 			"and he looks pleased. He gobles up the " <<
 			item.get_name() << "." << std::endl;
@@ -487,6 +514,7 @@ void Game::feed_elf(Item item) {
 			this->game_in_progress = false;
 		}
 	} else {
+		// Angry elf teleports you
 		std::cout << "The elf notices the item "
 			"you set down, but he is displeased! "
 			"He uses his magical powers to "
